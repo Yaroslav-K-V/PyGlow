@@ -1,5 +1,4 @@
 """Local autocomplete engine using a local Qwen model."""
-from __future__ import annotations
 
 from dataclasses import dataclass
 import builtins
