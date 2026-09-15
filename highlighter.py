@@ -54,6 +54,7 @@ class Highlighter(QSyntaxHighlighter):
         self._theme = theme_manager
         self._lexer = Lexer()
         self._formats: Dict[Token, QTextCharFormat] = {}
+        self._format_cache = {}
         self._rebuild_formats()
         # Re-highlight when theme changes
         theme_manager.theme_changed.connect(self._on_theme_changed)
@@ -66,6 +67,7 @@ class Highlighter(QSyntaxHighlighter):
     def _rebuild_formats(self) -> None:
         """Build QTextCharFormat objects from the current theme colors."""
         self._formats.clear()
+        self._format_cache.clear()
         for token, (color_key, bold, italic) in self.TOKEN_MAP.items():
             fmt = QTextCharFormat()
             fmt.setForeground(self._theme.get_color(color_key))
@@ -102,7 +104,13 @@ class Highlighter(QSyntaxHighlighter):
         is a child of Token.Keyword), so we use the ``in`` operator to
         walk up the hierarchy until we find a registered format.
         """
+        if token_type in self._format_cache:
+            return self._format_cache[token_type]
+
         for ttype, fmt in self._formats.items():
             if token_type in ttype:
+                self._format_cache[token_type] = fmt
                 return fmt
+
+        self._format_cache[token_type] = None
         return None
