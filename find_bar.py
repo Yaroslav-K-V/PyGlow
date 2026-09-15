@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
     QLabel, QTextEdit, QStyle, QPushButton,
 )
 from PySide6.QtCore import Signal, Qt, QSize
+import bisect
 from PySide6.QtGui import (
     QKeySequence, QShortcut, QTextDocument, QTextCursor, QColor,
     QTextCharFormat,
@@ -284,12 +285,8 @@ class FindBar(QWidget):
             return
         cursor = self._editor.textCursor()
         pos = cursor.selectionStart() if cursor.hasSelection() else cursor.position()
-        index = None
-        for i, match_pos in enumerate(self._match_positions):
-            if match_pos >= pos:
-                index = i
-                break
-        if index is None:
+        index = bisect.bisect_left(self._match_positions, pos)
+        if index == len(self._match_positions):
             index = 0
         self._count_label.setText(f'{index + 1}/{total}')
 
