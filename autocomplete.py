@@ -258,7 +258,7 @@ class AutocompleteController(QObject):
     def _word_prefix(self, text: str, cursor_pos: int) -> tuple[str, int]:
         if cursor_pos <= 0:
             return "", cursor_pos
-        start = cursor_pos
+        start = min(cursor_pos, len(text))
         while start > 0 and re.match(r"[A-Za-z0-9_]", text[start - 1]):
             start -= 1
         prefix = text[start:cursor_pos]
