@@ -363,12 +363,7 @@ class CodeEditor(QPlainTextEdit):
         line = block.text()
 
         # Copy leading whitespace from the current line
-        indent = ''
-        for c in line:
-            if c in ' \t':
-                indent += c
-            else:
-                break
+        indent = line[:len(line) - len(line.lstrip(' \t'))]
 
         # Increase indent after a colon (e.g. def, if, for, class)
         stripped = line.rstrip()
