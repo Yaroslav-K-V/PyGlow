@@ -7,7 +7,6 @@ Architecture:
     Lexer       -> wraps Pygments PythonLexer, produces (Token, str) pairs
     Highlighter -> QSyntaxHighlighter that applies formats per token
 """
-from __future__ import annotations
 from typing import List, Tuple, Dict
 from PySide6.QtGui import QSyntaxHighlighter, QTextCharFormat, QFont
 from pygments import lex
