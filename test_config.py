@@ -78,5 +78,20 @@ class TestConfig(unittest.TestCase):
         config = Config()
         self.assertEqual(config.font_family, DEFAULT_CONFIG['editor']['font_family'])
 
+    @patch('builtins.open', side_effect=OSError)
+    def test_load_oserror(self, mock_open):
+        # Create a settings file so that .exists() is True
+        settings_dir = Path(self.temp_dir.name) / '.pyglow'
+        settings_dir.mkdir(parents=True)
+        settings_file = settings_dir / 'settings.json'
+        settings_file.touch()
+
+        # Load config, the mocked open will raise OSError
+        config = Config()
+
+        # Should fallback to defaults
+        self.assertEqual(config.font_family, DEFAULT_CONFIG['editor']['font_family'])
+        mock_open.assert_called_once_with(settings_file, 'r', encoding='utf-8')
+
 if __name__ == '__main__':
     unittest.main()
